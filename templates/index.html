@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Paper Finder</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script>
+        function updatePatterns() {
+            let engineeringYear = document.getElementById('engineering_year').value;
+            fetch(`/patterns?engineering_year=${engineeringYear}`)
+                .then(response => response.json())
+                .then(data => {
+                    let patternSelect = document.getElementById('pattern');
+                    patternSelect.innerHTML = '';
+                    data.patterns.forEach(pattern => {
+                        let option = document.createElement('option');
+                        option.value = pattern;
+                        option.text = pattern;
+                        patternSelect.appendChild(option);
+                    });
+                });
+        }
+
+        function updateSubjects() {
+            let engineeringYear = document.getElementById('engineering_year').value;
+            let pattern = document.getElementById('pattern').value;
+            fetch(`/subjects?engineering_year=${engineeringYear}&pattern=${pattern}`)
+                .then(response => response.json())
+                .then(data => {
+                    let subjectSelect = document.getElementById('subject');
+                    subjectSelect.innerHTML = '';
+                    data.subjects.forEach(subject => {
+                        let option = document.createElement('option');
+                        option.value = subject;
+                        option.text = subject;
+                        subjectSelect.appendChild(option);
+                    });
+                });
+        }
+
+        function updatePapers() {
+            let engineeringYear = document.getElementById('engineering_year').value;
+            let pattern = document.getElementById('pattern').value;
+            let subject = document.getElementById('subject').value;
+            fetch(`/papers?engineering_year=${engineeringYear}&pattern=${pattern}&subject=${subject}`)
+                .then(response => response.json())
+                .then(data => {
+                    let paperSelect = document.getElementById('paper');
+                    paperSelect.innerHTML = '';
+                    data.papers.forEach(paper => {
+                        let option = document.createElement('option');
+                        option.value = paper;
+                        option.text = paper;
+                        paperSelect.appendChild(option);
+                    });
+                });
+        }
+
+        function downloadPaper() {
+            let engineeringYear = document.getElementById('engineering_year').value;
+            let pattern = document.getElementById('pattern').value;
+            let subject = document.getElementById('subject').value;
+            let paper = document.getElementById('paper').value;
+            window.location.href = `/download?engineering_year=${engineeringYear}&pattern=${pattern}&subject=${subject}&paper=${paper}`;
+        }
+
+        function viewPaper() {
+            let engineeringYear = document.getElementById('engineering_year').value;
+            let pattern = document.getElementById('pattern').value;
+            let subject = document.getElementById('subject').value;
+            let paper = document.getElementById('paper').value;
+            let iframe = document.getElementById('pdfViewer');
+            iframe.src = `/view?engineering_year=${engineeringYear}&pattern=${pattern}&subject=${subject}&paper=${paper}`;
+        }
+    </script>
+</head>
+<body>
+    <h1>Sppu Question Papers</h1>
+    <form>
+        <label for="engineering_year">Engineering Year:</label>
+        <select id="engineering_year" onchange="updatePatterns()">
+            <option value="">Select Engineering Year</option>
+            {% for engineering_year in engineering_years %}
+            <option value="{{ engineering_year }}">{{ engineering_year }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="pattern">Pattern:</label>
+        <select id="pattern" onchange="updateSubjects()">
+            <option value="">Select Pattern</option>
+        </select>
+
+        <label for="subject">Subject:</label>
+        <select id="subject" onchange="updatePapers()">
+            <option value="">Select Subject</option>
+        </select>
+
+        <label for="paper">Paper:</label>
+        <select id="paper">
+            <option value="">Select Paper</option>
+        </select>
+
+        <button type="button" onclick="downloadPaper()">Download Paper</button>
+        <button type="button" onclick="viewPaper()">View Paper</button>
+    </form>
+
+    <div style="text-align: center; margin-top: 20px;">
+        <iframe id="pdfViewer" src="" width="80%" height="600px" style="border: 1px solid #ddd;"></iframe>
+    </div>
+</body>
+</html>
