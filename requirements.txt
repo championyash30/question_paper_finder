@@ -4,11 +4,13 @@ charset-normalizer==3.3.2
 click==8.1.7
 colorama==0.4.6
 Flask==3.0.3
+gunicorn==23.0.0
 idna==3.7
 itsdangerous==2.2.0
 Jinja2==3.1.4
 MarkupSafe==3.0.1
 mysql-connector-python==9.1.0
+packaging==24.2
 pyttsx==1.1
 requests==2.32.3
 urllib3==2.2.2
